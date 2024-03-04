@@ -41,7 +41,7 @@ public class JDBCTask2Imp implements JDBCTask2Interface {
 
     public Collection<String> getJobCategoriesFromTitles(String searchString){
         Connection conn = this.getConnection();
-        String query = "SELECT cast_info.job_category FROM cast_info JOIN titles ON titles.title_id = cast_info.title_id WHERE cast_info.title_id=\\'%" + searchString + "%\\'";
+        String query = "SELECT cast_info.job_category FROM cast_info JOIN titles ON titles.title_id = cast_info.title_id WHERE cast_info.title_id LIKE \\'%" + searchString + "%\\'";
         Collection<String> coll = new ArrayList<String>();
         try (Statement stmt = conn.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
