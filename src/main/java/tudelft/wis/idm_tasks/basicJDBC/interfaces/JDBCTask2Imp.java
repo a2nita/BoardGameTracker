@@ -56,12 +56,14 @@ public class JDBCTask2Imp implements JDBCTask2Interface {
 
     public double getAverageRuntimeOfGenre(String genre){
         Connection conn = this.getConnection();
-        String query = "SELECT AVG(titles.runtime) AS avgRuntime FROM titles JOIN titles_genres ON titles.title_id = titles_genres.title_id WHERE titles_genres.genre='" + genre + "'";
-        double avgRuntime = 0;
+        String query = "SELECT AVG(titles.runtime) FROM titles JOIN titles_genres ON titles.title_id = titles_genres.title_id WHERE titles_genres.genre='" + genre + "'";
+        double avg = 0;
         try (Statement stmt = conn.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
-            avgRuntime = rs.getDouble("avgRuntime");
-            return avgRuntime;
+            while(rs.next()){
+                avg = rs.getDouble("avg");
+            }
+            return avg;
         } catch (SQLException e){
             return 0;
         }
