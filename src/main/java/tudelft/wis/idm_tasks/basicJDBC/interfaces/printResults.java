@@ -5,7 +5,7 @@ import java.io.*;
 public class printResults {
     // Calls all methods of JDBCTask2Interface and prints the first 20 results of each query
 
-    public void print() {
+    public static void print() {
         Scanner s = new Scanner(System.in);
         // Query 1 - getTitlesPerYear
         System.out.println("Please type in a year:");
