@@ -41,7 +41,7 @@ public class JDBCTask2Imp implements JDBCTask2Interface {
 
     public Collection<String> getJobCategoriesFromTitles(String searchString){
         Connection conn = this.getConnection();
-        String query = "SELECT cast_info.job_category FROM cast_info JOIN titles ON titles.title_id = cast_info.title_id WHERE cast_info.title_id LIKE \\'%" + searchString + "%\\'";
+        String query = "SELECT cast_info.job_category FROM cast_info JOIN titles ON titles.title_id = cast_info.title_id WHERE titles.primary_title LIKE '%" + searchString + "%'";
         Collection<String> coll = new ArrayList<String>();
         try (Statement stmt = conn.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
@@ -56,7 +56,7 @@ public class JDBCTask2Imp implements JDBCTask2Interface {
 
     public double getAverageRuntimeOfGenre(String genre){
         Connection conn = this.getConnection();
-        String query = "SELECT AVERAGE(titles.runtime) AS avgRuntime FROM titles JOIN titles_genres ON titles.title_id = titles_genres.title_id WHERE titles_genres.genre=\\'" + genre + "\\'";
+        String query = "SELECT AVG(titles.runtime) AS avgRuntime FROM titles JOIN titles_genres ON titles.title_id = titles_genres.title_id WHERE titles_genres.genre='" + genre + "'";
         double avgRuntime = 0;
         try (Statement stmt = conn.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
@@ -69,7 +69,7 @@ public class JDBCTask2Imp implements JDBCTask2Interface {
 
     public Collection<String> getPlayedCharacters(String actorFullname){
         Connection conn = this.getConnection();
-        String query = "SELECT tpc.character_name FROM title_person_character AS tpc JOIN persons ON persons.person_id = tpc.person_id WHERE persons.full_name=\\'" + actorFullname + "\\'";
+        String query = "SELECT tpc.character_name FROM title_person_character AS tpc JOIN persons ON persons.person_id = tpc.person_id WHERE persons.full_name='" + actorFullname + "'";
         Collection<String> coll = new ArrayList<String>();
         try (Statement stmt = conn.createStatement()){
             ResultSet rs = stmt.executeQuery(query);

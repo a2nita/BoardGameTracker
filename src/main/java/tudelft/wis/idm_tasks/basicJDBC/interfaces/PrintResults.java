@@ -1,5 +1,6 @@
 package tudelft.wis.idm_tasks.basicJDBC.interfaces;
 import java.util.*;
+import java.io.*;
 
 public class PrintResults {
     // Calls all methods of JDBCTask2Interface and prints the first 20 results of each query
