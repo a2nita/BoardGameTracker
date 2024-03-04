@@ -1,5 +1,6 @@
 package tudelft.wis.idm_tasks.basicJDBC.interfaces;
 import java.util.*;
+import java.io.*;
 
 public class PrintResults {
     // Calls all methods of JDBCTask2Interface and prints the first 20 results of each query
@@ -34,13 +35,9 @@ public class PrintResults {
         // Query 3 - getAverageRuntimeOfGenre
         System.out.println("Please type in a genre:");
         String genre = s3.nextLine();
-        double rs3 = obj.getAverageRuntimeOfGenre(genre);
-        Scanner m3 = new Scanner(String.valueOf(rs3)).useDelimiter(", ");
-        StringBuilder output3 = new StringBuilder();
-        for (int i = 0; i < 20; i++) {
-            output3.append(m3.next()).append("\n");
-        }
-        System.out.println(output3);
+        System.out.println(obj.getAverageRuntimeOfGenre(genre));
+        System.out.println("\n");
+
 
         Scanner s4 = new Scanner(System.in);
         // Query 4 - getPlayedCharacters
