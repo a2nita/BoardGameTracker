@@ -1,5 +1,4 @@
-
-
+<?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
@@ -10,13 +9,13 @@
             Persistence unit for the Jakarta Persistence tutorial of the Hibernate Getting Started Guide
         </description>
 
-        <class>org.hibernate.tutorial.em.Event</class>
+        <class>org.hibernate.boardGameTracker</class>
 
         <properties>
             <!-- Database connection settings -->
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1" />
-            <property name="jakarta.persistence.jdbc.user" value="sa" />
-            <property name="jakarta.persistence.jdbc.password" value="" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/imdb" />
+            <property name="jakarta.persistence.jdbc.user" value="postgres" />
+            <property name="jakarta.persistence.jdbc.password" value="!@9Xp49LbTq" />
 
             <!-- Automatically export the schema -->
             <property name="jakarta.persistence.schema-generation.database.action" value="create" />
