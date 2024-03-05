@@ -17,6 +17,7 @@ public class PrintResults {
         for (int i = 0; i < 20; i++) {
             output.append(m.next()).append("\n");
         }
+        output.deleteCharAt(0);
         System.out.println(output);
 
         Scanner s2 = new Scanner(System.in);
@@ -29,6 +30,7 @@ public class PrintResults {
         for (int i = 0; i < 20; i++) {
             output2.append(m2.next()).append("\n");
         }
+        output2.deleteCharAt(0);
         System.out.println(output2);
 
         Scanner s3 = new Scanner(System.in);
@@ -49,6 +51,7 @@ public class PrintResults {
         for (int i = 0; i < 20; i++) {
             output4.append(m4.next()).append("\n");
         }
+        output4.deleteCharAt(0);
         System.out.println(output4);
     }
 }
