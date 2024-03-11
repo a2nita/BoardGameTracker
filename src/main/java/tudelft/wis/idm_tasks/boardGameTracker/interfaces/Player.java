@@ -10,7 +10,8 @@ import java.util.Collection;
  * @author Christoph Lofi, Alexandra Neagu
  */
 public interface Player {
-    
+
+
     /**
      * Returns the name of the player.
      *

@@ -18,6 +18,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
  */
 public class PlaySession_POJO implements PlaySession {
 
+    // with JDBC these are all columns in the PlaySession Table
     private Date date;
     private Player host;
     private BoardGame game;
