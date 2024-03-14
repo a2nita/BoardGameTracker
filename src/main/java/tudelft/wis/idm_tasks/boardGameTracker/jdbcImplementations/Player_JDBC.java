@@ -56,6 +56,11 @@ public class Player_JDBC implements Player {
     public String toVerboseString(){
         return "";
     }
+
+    @Override
+    public UUID getId() {
+        return id;
+    }
     // @TODO: Implement this method.
 
 }

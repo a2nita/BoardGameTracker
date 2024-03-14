@@ -39,5 +39,10 @@ public class BoardGame_JDBC implements BoardGame {
     public String toVerboseString(){
         return "";
     }
+
+    @Override
+    public UUID getId() {
+        return id;
+    }
     // @TODO: Implement this method.
 }

@@ -1,6 +1,7 @@
 package tudelft.wis.idm_tasks.boardGameTracker.interfaces;
 
 import java.util.Collection;
+import java.util.UUID;
 
 // Add other necessary imports here
 
@@ -45,5 +46,6 @@ public interface Player {
      */
     public String toVerboseString();
         // @TODO: Implement this method.
-    
+
+    public UUID getId();
 }

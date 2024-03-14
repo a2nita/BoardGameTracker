@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity(name = "PlaySession")
-@Table(name = "playsessions", indexes = {
+@Table(name = "playsessions", indexes = { @Index(columnList="id"),
         @Index(columnList="date"), @Index(columnList="host"), @Index(columnList="game"), @Index(columnList="playtime"), @Index(columnList = "players"), @Index(columnList = "winner")})
 public class PlaySession_JPA implements PlaySession {
 
@@ -32,6 +32,7 @@ public class PlaySession_JPA implements PlaySession {
         this.playTime = playtime;
         this.players = players;
         this.winner = winner;
+        this.id = UUID.randomUUID();
     }
     public PlaySession_JPA() {}
 
@@ -95,4 +96,7 @@ public class PlaySession_JPA implements PlaySession {
         return "Game date: " + date + ", host: " + host + ", game: " + game + ", playtime: " + playTime + ", winner: " + winner ;
     }
 
+    public UUID getId() {
+        return id;
+    }
 }

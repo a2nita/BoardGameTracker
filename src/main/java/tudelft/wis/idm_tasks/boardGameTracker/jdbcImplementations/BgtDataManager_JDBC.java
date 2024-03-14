@@ -17,7 +17,7 @@ public class BgtDataManager_JDBC implements BgtDataManager {
 
     private ArrayList< Player_JDBC > players = new ArrayList< Player_JDBC >();
     private ArrayList< BoardGame_JDBC > games = new ArrayList< BoardGame_JDBC >();
-    private ArrayList< PlaySession_JDBC > sessions = new ArrayList< PlaySession_JDBC>();
+//    private ArrayList< PlaySession_JDBC > sessions = new ArrayList< PlaySession_JDBC>();
 
 
     public Connection getConnection () {
@@ -134,8 +134,7 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      */
     public void persistPlayer(Player player){
         Connection conn = this.getConnection();
-        boolean playerExists = checkPlayerExists(connection, player.getId());
-        String query = "UPDATE"
+        String query = "UPDATE";
     }
     // @TODO: Implement this method.
 
@@ -143,13 +142,13 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * Persists a given session to the DB. Note that this session might already exist and only needs an update :-)
      * @param session the session
      */
-    public void persistPlaySession(PlaySession session);
+    public void persistPlaySession(PlaySession session){}
     // @TODO: Implement this method.
 
     /**
      * Persists a given game to the DB. Note that this game might already exist and only needs an update :-)
      * @param game the game
      */
-    public void persistBoardGame(BoardGame game);
+    public void persistBoardGame(BoardGame game){}
     // @TODO: Implement this method.
 }

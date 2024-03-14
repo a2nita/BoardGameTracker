@@ -6,6 +6,8 @@ package tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
+
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.PlaySession;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
@@ -87,6 +89,11 @@ public class PlaySession_POJO implements PlaySession {
         this.playTime = playTime;
         this.players = players;
         this.winner = winner;
+    }
+
+    public UUID getId(){
+        // do nothing
+        return UUID.randomUUID();
     }
 
 }

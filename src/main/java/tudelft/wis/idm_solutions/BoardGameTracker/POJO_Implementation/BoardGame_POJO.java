@@ -6,6 +6,8 @@ package tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation;
 
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 
+import java.util.UUID;
+
 /**
  * POJO (Plain Old Java Object) Implementation without any database
  * functionality.
@@ -47,6 +49,11 @@ public class BoardGame_POJO implements BoardGame {
     public BoardGame_POJO(String name, String bggURL) {
         this.name = name;
         this.bggURL = bggURL;
+    }
+
+    public UUID getId(){
+        // do nothing
+        return UUID.randomUUID();
     }
 
 }
