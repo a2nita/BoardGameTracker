@@ -12,6 +12,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.PlaySession;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +43,7 @@ public class POJO_Test extends tudelft.wis.idm_solutions.BoardGameTracker.Abstra
      * and the hist and the game is being checked.
      */
     @Test
-    public void basicTest() throws BgtException {
+    public void basicTest() throws BgtException, SQLException {
 
         // Make sure to start this test with an empty DB - trivial for POJO though...
         // Create dummy data

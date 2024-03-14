@@ -26,7 +26,7 @@ public interface BgtDataManager {
      * @return the new player
      * @throws java.sql.SQLException DB trouble
      */
-    public Player createNewPlayer(String name, String nickname) throws BgtException;
+    public Player createNewPlayer(String name, String nickname) throws BgtException, SQLException;
         // @TODO: Implement this method.
 
     /**
@@ -93,7 +93,7 @@ public interface BgtDataManager {
      * Persists a given player to the DB. Note that this player might already exist and only needs an update :-)
      * @param player the player
      */
-    public void persistPlayer(Player player);
+    public void persistPlayer(Player player) throws SQLException, BgtException;
         // @TODO: Implement this method.
 
     /**

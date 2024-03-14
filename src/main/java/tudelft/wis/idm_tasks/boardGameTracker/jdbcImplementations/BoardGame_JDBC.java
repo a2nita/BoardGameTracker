@@ -8,7 +8,7 @@ public class BoardGame_JDBC implements BoardGame {
 
     private String name;
     private String bggURL;
-    private UUID id;
+    private final UUID id;
 
     public BoardGame_JDBC(String name, String bggURL) {
         this.name = name;
@@ -38,6 +38,10 @@ public class BoardGame_JDBC implements BoardGame {
      */
     public String toVerboseString(){
         return "";
+    }
+
+    public UUID getId() {
+        return id;
     }
     // @TODO: Implement this method.
 }

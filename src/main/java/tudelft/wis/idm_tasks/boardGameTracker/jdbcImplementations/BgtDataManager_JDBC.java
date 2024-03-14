@@ -9,14 +9,13 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.PlaySession;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.Date;
 
 public class BgtDataManager_JDBC implements BgtDataManager {
 
-    private ArrayList< Player_JDBC > players = new ArrayList< Player_JDBC >();
-    private ArrayList< BoardGame_JDBC > games = new ArrayList< BoardGame_JDBC >();
+    private ArrayList< Player_JDBC > players = new ArrayList<>();
+    private ArrayList< BoardGame_JDBC > games = new ArrayList<>();
     private ArrayList< PlaySession_JDBC > sessions = new ArrayList< PlaySession_JDBC>();
 
 
@@ -41,10 +40,17 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * @return the new player
      * @throws java.sql.SQLException DB trouble
      */
-    public Player createNewPlayer(String name, String nickname) throws BgtException {
+    public Player createNewPlayer(String name, String nickname) throws BgtException, SQLException {
+        Player_JDBC player = new Player_JDBC(name, nickname);
         Connection conn = this.getConnection();
-        String query = "INSERT INTO players (name, nickname) VALUES (" + name + "," + nickname + " )";
-        return null;
+        String query = "INSERT INTO players (id, name, nickname) VALUES (" + player.getId() + ", " + name + ", " + nickname + " )";
+        try (Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery(query);
+        } catch (SQLException e){
+            throw new BgtException(e);
+        }
+        players.add(player);
+        return player;
     }
     // @TODO: Implement this method.
 
@@ -56,9 +62,23 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * @throws BgtException the bgt exception
      */
     public Collection<Player> findPlayersByName(String name) throws BgtException{
+        Collection<Player> players1 = new ArrayList<>();
         Connection conn = this.getConnection();
         String query = "SELECT name FROM players WHERE name='"+ name + "';";
-        return null;
+        try (Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()){
+                String id1 = rs.getString("id");;
+                for (int i = 0; i < players.size(); i++){
+                    if (Objects.equals(String.valueOf(players.get(i).getId()), id1)) {
+                        players1.add(players.get(i));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return players1;
     }
     // @TODO: Implement this method.
 
@@ -76,8 +96,15 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      */
     public BoardGame createNewBoardgame(String name, String bggURL) throws BgtException{
         Connection conn = this.getConnection();
-        String query = "INSERT INTO boardgames (name, bggURL) VALUES (" + name + "," + bggURL + " )";
-        return null;
+        BoardGame_JDBC boardGame = new BoardGame_JDBC(name, bggURL);
+        String query = "INSERT INTO boardgames (id, name, bggURL) VALUES (" + ((BoardGame_JDBC) boardGame).getId() + name + "," + bggURL + " )";
+        try (Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery(query);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        games.add(boardGame);
+        return boardGame;
     }
     // @TODO: Implement this method.
 
@@ -90,8 +117,23 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      */
     public Collection<BoardGame> findGamesByName(String name) throws BgtException{
         Connection conn = this.getConnection();
+        Collection<BoardGame> boardGames = new ArrayList<>();
         String query = "SELECT name FROM boardgames WHERE name='"+ name + "';";
-        return null;
+        try (Statement stmt = conn.createStatement()){
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()){
+                String id1 = rs.getString("id");;
+                for (int i = 0; i < games.size(); i++){
+                    if (Objects.equals(String.valueOf(games.get(i).getId()), id1)) {
+                        boardGames.add(games.get(i));
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return boardGames;
     }
     // @TODO: Implement this method.
 
@@ -132,24 +174,35 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * Persists a given player to the DB. Note that this player might already exist and only needs an update :-)
      * @param player the player
      */
-    public void persistPlayer(Player player){
-        Connection conn = this.getConnection();
-        boolean playerExists = checkPlayerExists(connection, player.getId());
-        String query = "UPDATE"
+    public void persistPlayer(Player player) throws SQLException, BgtException {
+        Player_JDBC playerJdbc = (Player_JDBC) player;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getId().equals(playerJdbc.getId())) {
+                Connection conn = this.getConnection();
+                String query = "UPDATE players SET name='" + playerJdbc.getName() + "', nickname='" + playerJdbc.getNickName() + "';";
+                try (Statement stmt = conn.createStatement()) {
+                    ResultSet rs = stmt.executeQuery(query);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        if (!players.contains(playerJdbc)) {
+            createNewPlayer(playerJdbc.getName(), playerJdbc.getNickName());
+        }
     }
     // @TODO: Implement this method.
-
     /**
      * Persists a given session to the DB. Note that this session might already exist and only needs an update :-)
      * @param session the session
      */
-    public void persistPlaySession(PlaySession session);
+    public void persistPlaySession(PlaySession session) {}
     // @TODO: Implement this method.
 
     /**
      * Persists a given game to the DB. Note that this game might already exist and only needs an update :-)
      * @param game the game
      */
-    public void persistBoardGame(BoardGame game);
+    public void persistBoardGame(BoardGame game) {}
     // @TODO: Implement this method.
 }
