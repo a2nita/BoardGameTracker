@@ -57,6 +57,7 @@ public class Player_JDBC implements Player {
         return "";
     }
 
+
     public UUID getId() {
         return id;
     }

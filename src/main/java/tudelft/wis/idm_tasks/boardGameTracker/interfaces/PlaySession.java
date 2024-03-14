@@ -2,6 +2,7 @@ package tudelft.wis.idm_tasks.boardGameTracker.interfaces;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 // Add other necessary imports here
 
@@ -68,5 +69,7 @@ public interface PlaySession {
      */
     public String toVerboseString();
         // @TODO: Implement this method.
+
+    public UUID getId();
 
 }

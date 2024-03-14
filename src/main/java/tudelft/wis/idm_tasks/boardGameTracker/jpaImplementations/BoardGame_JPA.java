@@ -6,7 +6,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 import java.util.UUID;
 
 @Entity(name = "BoardGame")
-@Table(name ="boardgames", indexes = {
+@Table(name ="boardgames", indexes = { @Index(columnList="id"),
         @Index(columnList = "name"), @Index(columnList = "bggURL")})
 public class BoardGame_JPA implements BoardGame {
 
@@ -19,6 +19,7 @@ public class BoardGame_JPA implements BoardGame {
     public BoardGame_JPA(String name, String bggURL){
         this.name = name;
         this.bggURL = bggURL;
+        this.id = UUID.randomUUID();
     }
 
     public BoardGame_JPA() {}
@@ -47,6 +48,10 @@ public class BoardGame_JPA implements BoardGame {
     public String toVerboseString(){
 
         return "Boardgame name: " + name + ", Boardgame URL: " + bggURL;
+    }
+
+    public UUID getId() {
+        return id;
     }
     // @TODO: Implement this method.
 }

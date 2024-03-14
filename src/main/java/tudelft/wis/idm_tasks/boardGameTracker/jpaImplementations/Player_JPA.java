@@ -10,8 +10,8 @@ import java.util.Scanner;
 import java.util.UUID;
 
 @Entity(name = "Player")
-@Table(name ="players", indexes = {
-        @Index(columnList = "name"), @Index(columnList = "id")})
+@Table(name ="players", indexes = { @Index(columnList="id"),
+        @Index(columnList = "name"), @Index(columnList = "nickname")})
 public class Player_JPA implements Player {
 
     @Id
@@ -26,6 +26,7 @@ public class Player_JPA implements Player {
     public Player_JPA(String name, String nickname){
         this.name = name;
         this.nickName = nickname;
+        this.id = UUID.randomUUID();
    }
     public Player_JPA(){}
 
@@ -67,4 +68,7 @@ public class Player_JPA implements Player {
         return s1;
     }
 
+    public UUID getId() {
+        return id;
+    }
 }

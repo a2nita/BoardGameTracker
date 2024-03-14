@@ -6,15 +6,27 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 public class PlaySession_JDBC implements PlaySession {
 
+    private UUID id;
     private Date date;
     private Player host;
     private BoardGame game;
     private int playTime;
     private Collection<Player> players;
     private Player winner;
+
+    public PlaySession_JDBC(Date date, Player host, BoardGame game, int playTime, Collection<Player> players, Player winner) {
+        this.id = UUID.randomUUID();
+        this.date = date;
+        this.host = host;
+        this.game = game;
+        this.playTime = playTime;
+        this.players = players;
+        this.winner = winner;
+    }
 
     public Date getDate(){
         return this.date;
@@ -81,4 +93,8 @@ public class PlaySession_JDBC implements PlaySession {
         return "";
     }
     // @TODO: Implement this method.
+
+    public UUID getId(){
+        return id;
+    }
 }

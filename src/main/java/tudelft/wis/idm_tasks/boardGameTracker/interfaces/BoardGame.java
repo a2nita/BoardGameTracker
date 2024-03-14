@@ -2,6 +2,8 @@ package tudelft.wis.idm_tasks.boardGameTracker.interfaces;
 
 // Add other necessary imports here
 
+import java.util.UUID;
+
 /**
  * A simplistic interface representing a board game.
  *
@@ -32,5 +34,7 @@ public interface BoardGame {
      */
     public String toVerboseString();
         // @TODO: Implement this method.
+
+    public UUID getId();
 
 }

@@ -14,9 +14,11 @@ import java.util.Date;
 
 public class BgtDataManager_JDBC implements BgtDataManager {
 
+
     private ArrayList< Player_JDBC > players = new ArrayList<>();
     private ArrayList< BoardGame_JDBC > games = new ArrayList<>();
     private ArrayList< PlaySession_JDBC > sessions = new ArrayList< PlaySession_JDBC>();
+
 
 
     public Connection getConnection () {
@@ -174,6 +176,7 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * Persists a given player to the DB. Note that this player might already exist and only needs an update :-)
      * @param player the player
      */
+
     public void persistPlayer(Player player) throws SQLException, BgtException {
         Player_JDBC playerJdbc = (Player_JDBC) player;
         for (int i = 0; i < players.size(); i++) {
@@ -190,12 +193,14 @@ public class BgtDataManager_JDBC implements BgtDataManager {
         if (!players.contains(playerJdbc)) {
             createNewPlayer(playerJdbc.getName(), playerJdbc.getNickName());
         }
+
     }
     // @TODO: Implement this method.
     /**
      * Persists a given session to the DB. Note that this session might already exist and only needs an update :-)
      * @param session the session
      */
+
     public void persistPlaySession(PlaySession session) {}
     // @TODO: Implement this method.
 
@@ -203,6 +208,7 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * Persists a given game to the DB. Note that this game might already exist and only needs an update :-)
      * @param game the game
      */
+
     public void persistBoardGame(BoardGame game) {}
     // @TODO: Implement this method.
 }

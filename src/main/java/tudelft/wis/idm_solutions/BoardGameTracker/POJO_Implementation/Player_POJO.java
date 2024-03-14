@@ -6,6 +6,8 @@ package tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.UUID;
+
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 
@@ -55,6 +57,11 @@ public class Player_POJO implements Player {
             result = result + " (" + nickName + ")";
         }
         return result;
+    }
+
+    public UUID getId(){
+        // do nothing
+        return UUID.randomUUID();
     }
 
 }
