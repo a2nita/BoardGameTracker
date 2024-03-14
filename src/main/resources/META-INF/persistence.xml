@@ -4,12 +4,14 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <persistence-unit name="org.hibernate.tutorial.jpa">
+    <persistence-unit name="tudelft.wis.idm_tasks.boardGameTracker">
         <description>
-            Persistence unit for the Jakarta Persistence tutorial of the Hibernate Getting Started Guide
+            Persistence unit for the Boardgame Tracker
         </description>
 
-        <class>org.hibernate.boardGameTracker</class>
+        <class>tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations.Player_JPA</class>
+        <class>tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations.BoardGame_JPA</class>
+        <class>tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations.PlaySession_JPA</class>
 
         <properties>
             <!-- Database connection settings -->

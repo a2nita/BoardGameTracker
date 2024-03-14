@@ -1,6 +1,9 @@
 package tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations;
 
 import jakarta.persistence.*;
+import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.BoardGame_POJO;
+import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.PlaySession_POJO;
+import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.Player_POJO;
 import tudelft.wis.idm_tasks.basicJDBC.interfaces.JDBCManager;
 import tudelft.wis.idm_tasks.basicJDBC.interfaces.JDBCManagerImp;
 import tudelft.wis.idm_tasks.boardGameTracker.BgtException;
@@ -11,6 +14,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -56,6 +60,11 @@ public class BgtDataManager_JPA implements BgtDataManager {
         TypedQuery<Player_JPA> query = entityManager.createQuery(jpql, Player_JPA.class);
         query.setParameter("search", "%" + name + "%");
         Collection<Player_JPA> players = query.getResultList();
+        Collection<Player> coll = new ArrayList<>();
+        for (Player_JPA p : players){
+            coll.add(new Player_POJO(p.getPlayerName(), p.getPlayerNickName()));
+        }
+        return coll;
     }
 
     /**
@@ -92,6 +101,11 @@ public class BgtDataManager_JPA implements BgtDataManager {
         TypedQuery<BoardGame_JPA> query = entityManager.createQuery(jpql, BoardGame_JPA.class);
         query.setParameter("search", "%" + name + "%");
         Collection<BoardGame_JPA> games = query.getResultList();
+        Collection<BoardGame> coll = new ArrayList<>();
+        for (BoardGame_JPA g : games){
+            coll.add(new BoardGame_POJO(g.getName(), g.getBGG_URL()));
+        }
+        return coll;
     }
 
     /**
@@ -128,6 +142,11 @@ public class BgtDataManager_JPA implements BgtDataManager {
         TypedQuery<PlaySession_JPA> query = entityManager.createQuery(jpql, PlaySession_JPA.class);
         query.setParameter("search", date);
         Collection<PlaySession_JPA> sessions = query.getResultList();
+        Collection<PlaySession> coll = new ArrayList<>();
+        for (PlaySession_JPA s : sessions){
+            coll.add(new PlaySession_POJO(s.getDate(), s.getHost(), s.getGame(), s.getPlaytime(), s.getAllPlayers(), s.getWinner() ));
+        }
+        return coll;
     }
 
     /**
@@ -137,7 +156,11 @@ public class BgtDataManager_JPA implements BgtDataManager {
     public void persistPlayer(Player player){
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        entityManager.merge(player);
+        if (entityManager.contains(player)){
+            entityManager.merge(player);
+        } else {
+            entityManager.persist(player);
+        }
         transaction.commit();
     }
 
@@ -148,7 +171,11 @@ public class BgtDataManager_JPA implements BgtDataManager {
     public void persistPlaySession(PlaySession session){
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        entityManager.merge(session);
+        if (entityManager.contains(session)){
+            entityManager.merge(session);
+        } else {
+            entityManager.persist(session);
+        }
         transaction.commit();
     }
 
@@ -159,8 +186,11 @@ public class BgtDataManager_JPA implements BgtDataManager {
     public void persistBoardGame(BoardGame game){
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        entityManager.merge(game);
+        if (entityManager.contains(game)){
+            entityManager.merge(game);
+        } else {
+            entityManager.persist(game);
+        }
         transaction.commit();
     }
-    // @TODO: Implement this method.
 }

@@ -3,6 +3,8 @@ package tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations;
 import jakarta.persistence.*;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 
+import java.util.UUID;
+
 @Entity(name = "BoardGame")
 @Table(name ="boardgames", indexes = {
         @Index(columnList = "name"), @Index(columnList = "bggURL")})
@@ -10,7 +12,7 @@ public class BoardGame_JPA implements BoardGame {
 
     @Id
     @GeneratedValue
-    private int id;
+    private UUID id;
     private String name;
     private String bggURL;
 
@@ -20,6 +22,7 @@ public class BoardGame_JPA implements BoardGame {
     }
 
     public BoardGame_JPA() {}
+
 
     public String getName(){
         return this.name;

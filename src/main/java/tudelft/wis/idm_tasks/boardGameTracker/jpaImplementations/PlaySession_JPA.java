@@ -8,6 +8,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 import javax.annotation.processing.Generated;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity(name = "PlaySession")
 @Table(name = "playsessions", indexes = {
@@ -16,6 +17,7 @@ public class PlaySession_JPA implements PlaySession {
 
     @Id
     @GeneratedValue
+    private UUID id;
     private Date date;
     private Player host;
     private BoardGame game;
@@ -32,6 +34,7 @@ public class PlaySession_JPA implements PlaySession {
         this.winner = winner;
     }
     public PlaySession_JPA() {}
+
     public Date getDate(){
         return this.date;
     }
@@ -91,4 +94,5 @@ public class PlaySession_JPA implements PlaySession {
 
         return "Game date: " + date + ", host: " + host + ", game: " + game + ", playtime: " + playTime + ", winner: " + winner ;
     }
+
 }

@@ -7,6 +7,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.UUID;
 
 @Entity(name = "Player")
 @Table(name ="players", indexes = {
@@ -15,7 +16,7 @@ public class Player_JPA implements Player {
 
     @Id
     @GeneratedValue
-    private int id;
+    private UUID id;
     private String name;
     private String nickName;
 
@@ -25,7 +26,7 @@ public class Player_JPA implements Player {
     public Player_JPA(String name, String nickname){
         this.name = name;
         this.nickName = nickname;
-    }
+   }
     public Player_JPA(){}
 
     @Override
@@ -52,7 +53,6 @@ public class Player_JPA implements Player {
      */
     @Override
     public Collection<BoardGame> getGameCollection(){
-
         return gameCollection;
     }
 
