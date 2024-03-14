@@ -12,7 +12,7 @@ public class Player_JDBC implements Player {
 
     private String name;
     private String nickName;
-    private UUID id;
+    private final UUID id;
     private Collection<BoardGame> gameCollection = new LinkedList<BoardGame>();
 
     public Player_JDBC(String name, String nickName) {
@@ -57,9 +57,17 @@ public class Player_JDBC implements Player {
         return "";
     }
 
-    @Override
+
     public UUID getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNickName() {
+        return nickName;
     }
     // @TODO: Implement this method.
 
