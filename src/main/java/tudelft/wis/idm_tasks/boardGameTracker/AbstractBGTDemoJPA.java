@@ -105,5 +105,6 @@ public abstract class AbstractBGTDemoJPA {
         }
         return sessions;
     }
+
     
 }

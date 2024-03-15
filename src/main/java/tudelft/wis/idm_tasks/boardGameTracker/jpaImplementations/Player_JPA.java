@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 @Entity(name = "Player")
 @Table(name ="players", indexes = { @Index(columnList="id"),
@@ -16,12 +13,15 @@ public class Player_JPA implements Player {
 
     @Id
     @GeneratedValue
+    @Column(name="id")
     private UUID id;
+    @Column(name="name")
     private String name;
+    @Column(name="nickname")
     private String nickName;
 
     @ManyToMany(targetEntity = BoardGame_JPA.class, fetch = FetchType.EAGER)
-    private Collection<BoardGame> gameCollection;
+    private Collection<BoardGame> gameCollection = new ArrayList<>();
 
     public Player_JPA(String name, String nickname){
         this.name = name;

@@ -12,8 +12,11 @@ public class BoardGame_JPA implements BoardGame {
 
     @Id
     @GeneratedValue
+    @Column(name="id")
     private UUID id;
+    @Column(name="name")
     private String name;
+    @Column(name="bggurl")
     private String bggURL;
 
     public BoardGame_JPA(String name, String bggURL){

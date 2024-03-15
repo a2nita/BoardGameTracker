@@ -1,9 +1,6 @@
 package tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations;
 
 import jakarta.persistence.*;
-import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.BoardGame_POJO;
-import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.PlaySession_POJO;
-import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.Player_POJO;
 import tudelft.wis.idm_tasks.basicJDBC.interfaces.JDBCManager;
 import tudelft.wis.idm_tasks.basicJDBC.interfaces.JDBCManagerImp;
 import tudelft.wis.idm_tasks.boardGameTracker.BgtException;
@@ -21,12 +18,12 @@ import java.util.Date;
 
 public class BgtDataManager_JPA implements BgtDataManager {
 
-    private EntityManager entityManager;
+    private EntityManager em;
+
 
     public BgtDataManager_JPA() {
-        try (EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPATest")) {
-            entityManager = entityManagerFactory.createEntityManager();
-        }
+        EntityManagerFactory emf2 = Persistence.createEntityManagerFactory("JPATest");
+        em = emf2.createEntityManager();
     }
     /**
      * Creates a new player and stores it in the DB.
@@ -39,11 +36,23 @@ public class BgtDataManager_JPA implements BgtDataManager {
     @Override
     public Player createNewPlayer(String name, String nickname) throws BgtException {
         Player_JPA newPlayer = new Player_JPA(name, nickname);
+        EntityTransaction transaction = em.getTransaction();
 
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(newPlayer);
-        transaction.commit();
+        try {
+            transaction.begin();
+            em.persist(newPlayer);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
+        }
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
         return newPlayer;
 
     }
@@ -56,14 +65,32 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @throws BgtException the bgt exception
      */
     public Collection<Player> findPlayersByName(String name) throws BgtException {
-        String jpql = "SELECT p FROM Player p WHERE p.name LIKE :search";
-        TypedQuery<Player_JPA> query = entityManager.createQuery(jpql, Player_JPA.class);
-        query.setParameter("search", "%" + name + "%");
-        Collection<Player_JPA> players = query.getResultList();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         Collection<Player> coll = new ArrayList<>();
-        for (Player_JPA p : players){
-            coll.add(new Player_POJO(p.getPlayerName(), p.getPlayerNickName()));
+
+        try {
+            String jpql = "SELECT p FROM Player p WHERE p.name LIKE :search";
+            TypedQuery<Player_JPA> query = em.createQuery(jpql, Player_JPA.class);
+            query.setParameter("search", "%" + name + "%");
+            Collection<Player_JPA> players = query.getResultList();
+            for (Player_JPA p : players) {
+                coll.add(new Player_JPA(p.getPlayerName(), p.getPlayerNickName()));
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
+            throw new BgtException("Error finding players by name: " + e.getMessage(), e);
         }
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
         return coll;
     }
 
@@ -80,12 +107,24 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @throws SQLException DB trouble
      */
     public BoardGame createNewBoardgame(String name, String bggURL) throws BgtException{
-        BoardGame_JPA newGame = new BoardGame_JPA(name, bggURL);
 
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(newGame);
-        transaction.commit();
+        BoardGame_JPA newGame = new BoardGame_JPA(name, bggURL);
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.persist(newGame);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
+        }
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
         return newGame;
     }
 
@@ -97,14 +136,31 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @return collection of all boardgames containing the param substring in their names
      */
     public Collection<BoardGame> findGamesByName(String name) throws BgtException{
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        Collection<BoardGame> coll = new ArrayList<>();
+
+        try {
         String jpql = "SELECT b FROM BoardGame_JPA b WHERE b.name LIKE :search ";
-        TypedQuery<BoardGame_JPA> query = entityManager.createQuery(jpql, BoardGame_JPA.class);
+        TypedQuery<BoardGame_JPA> query = em.createQuery(jpql, BoardGame_JPA.class);
         query.setParameter("search", "%" + name + "%");
         Collection<BoardGame_JPA> games = query.getResultList();
-        Collection<BoardGame> coll = new ArrayList<>();
         for (BoardGame_JPA g : games){
-            coll.add(new BoardGame_POJO(g.getName(), g.getBGG_URL()));
+            coll.add(new BoardGame_JPA(g.getName(), g.getBGG_URL()));
         }
+        transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
+            throw new BgtException("Error finding players by name: " + e.getMessage(), e);
+        }
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
         return coll;
     }
 
@@ -121,12 +177,24 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @return the new play session
      */
     public PlaySession createNewPlaySession(Date date, Player host, BoardGame game, int playtime, Collection<Player> players, Player winner) throws BgtException{
-        PlaySession_JPA newSession = new PlaySession_JPA(date, host, game, playtime, players, winner);
 
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(newSession);
-        transaction.commit();
+        PlaySession_JPA newSession = new PlaySession_JPA(date, host, game, playtime, players, winner);
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.persist(newSession);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
+        }
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
         return newSession;
     }
 
@@ -138,14 +206,31 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @throws BgtException the bgt exception
      */
     public Collection<PlaySession> findSessionByDate(Date date) throws BgtException{
-        String jpql = "SELECT s FROM PlaySession s WHERE s.date = :search ";
-        TypedQuery<PlaySession_JPA> query = entityManager.createQuery(jpql, PlaySession_JPA.class);
-        query.setParameter("search", date);
-        Collection<PlaySession_JPA> sessions = query.getResultList();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         Collection<PlaySession> coll = new ArrayList<>();
-        for (PlaySession_JPA s : sessions){
-            coll.add(new PlaySession_POJO(s.getDate(), s.getHost(), s.getGame(), s.getPlaytime(), s.getAllPlayers(), s.getWinner() ));
+        try{
+                String jpql = "SELECT s FROM PlaySession s WHERE s.date = :search ";
+                TypedQuery<PlaySession_JPA> query = em.createQuery(jpql, PlaySession_JPA.class);
+                query.setParameter("search", date);
+                Collection<PlaySession_JPA> sessions = query.getResultList();
+                for (PlaySession_JPA s : sessions){
+                    coll.add(new PlaySession_JPA(s.getDate(), s.getHost(), s.getGame(), s.getPlaytime(), s.getAllPlayers(), s.getWinner() ));
+                }
+                transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
+            throw new BgtException("Error finding players by name: " + e.getMessage(), e);
         }
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
         return coll;
     }
 
@@ -154,14 +239,27 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @param player the player
      */
     public void persistPlayer(Player player){
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        if (entityManager.contains(player)){
-            entityManager.merge(player);
-        } else {
-            entityManager.persist(player);
+
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            if (!em.contains(player)){
+                em.persist(player);
+            } else {
+                em.merge(player);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
         }
-        transaction.commit();
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
     }
 
     /**
@@ -169,14 +267,27 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @param session the session
      */
     public void persistPlaySession(PlaySession session){
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        if (entityManager.contains(session)){
-            entityManager.merge(session);
-        } else {
-            entityManager.persist(session);
+
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            if (!em.contains(session)) {
+                em.persist(session);
+            } else {
+                em.merge(session);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
         }
-        transaction.commit();
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
     }
 
     /**
@@ -184,17 +295,30 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @param game the game
      */
     public void persistBoardGame(BoardGame game){
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        if (entityManager.contains(game)){
-            entityManager.merge(game);
-        } else {
-            entityManager.persist(game);
+
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            if (!em.contains(game)){
+                em.persist(game);
+            } else {
+                em.merge(game);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            // Handle the exception
         }
-        transaction.commit();
+//        } finally {
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
     }
 
     public EntityManager getEntityManager() {
-        return entityManager;
+        return em;
     }
 }

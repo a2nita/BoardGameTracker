@@ -12,26 +12,36 @@ import java.util.UUID;
 
 @Entity(name = "PlaySession")
 @Table(name = "playsessions", indexes = { @Index(columnList="id"),
-        @Index(columnList="date"), @Index(columnList="host"), @Index(columnList="game"), @Index(columnList="playtime"), @Index(columnList = "players"), @Index(columnList = "winner")})
+        @Index(columnList="date"), @Index(columnList="host"), @Index(columnList="game"), @Index(columnList="playtime"), @Index(columnList = "winner")})
 public class PlaySession_JPA implements PlaySession {
 
     @Id
     @GeneratedValue
+    @Column(name="id")
     private UUID id;
+    @Column(name="date")
     private Date date;
-    private Player host;
-    private BoardGame game;
+    @OneToOne
+    @JoinColumn(name="host")
+    private Player_JPA host;
+    @OneToOne
+    @JoinColumn(name="game")
+    private BoardGame_JPA game;
+    @Column(name="playTime")
     private int playTime;
+    @ManyToMany(targetEntity= Player_JPA.class, fetch = FetchType.EAGER)
     private Collection<Player> players;
-    private Player winner;
+    @OneToOne
+    @JoinColumn(name="winner")
+    private Player_JPA winner;
 
     public PlaySession_JPA(Date date, Player host, BoardGame game, int playtime, Collection<Player> players, Player winner){
         this.date = date;
-        this.host = host;
-        this.game = game;
+        this.host = (Player_JPA) host;
+        this.game = (BoardGame_JPA) game;
         this.playTime = playtime;
         this.players = players;
-        this.winner = winner;
+        this.winner = (Player_JPA) winner;
         this.id = UUID.randomUUID();
     }
     public PlaySession_JPA() {}
@@ -91,8 +101,8 @@ public class PlaySession_JPA implements PlaySession {
      *
      * @return the string representation of the object
      */
+    @Override
     public String toVerboseString(){
-
         return "Game date: " + date + ", host: " + host + ", game: " + game + ", playtime: " + playTime + ", winner: " + winner ;
     }
 
