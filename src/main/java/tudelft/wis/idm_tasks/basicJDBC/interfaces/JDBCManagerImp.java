@@ -7,7 +7,7 @@ public class JDBCManagerImp implements JDBCManager {
 
         public Connection getConnection () throws SQLException, ClassNotFoundException {
             try {
-                String url = "jdbc:postgresql://localhost:5432/imdb";
+                String url = "jdbc:postgresql://localhost:5432/bgt_jdbc";
                 String password = "!@9Xp49LbTq";
                 String username = "postgres";
                 Class.forName("org.postgresql.Driver");

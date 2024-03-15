@@ -19,7 +19,12 @@ public class BgtDataManager_JDBC implements BgtDataManager {
     private ArrayList< BoardGame_JDBC > games = new ArrayList<>();
     // private ArrayList< PlaySession_JDBC > sessions = new ArrayList< PlaySession_JDBC>();
 
-
+//    JDBCManager DbManager;
+//    Connection conn;
+//
+//    public BgtDataManager_JDBC(){
+//        this.DbManager = new JDBCManagerImp();
+//    }
 
     public Connection getConnection () {
         try {
@@ -45,9 +50,12 @@ public class BgtDataManager_JDBC implements BgtDataManager {
     public Player createNewPlayer(String name, String nickname) throws BgtException, SQLException {
         Player_JDBC player = new Player_JDBC(name, nickname);
         Connection conn = this.getConnection();
-        String query = "INSERT INTO players (id, name, nickname) VALUES (" + player.getId() + ", " + name + ", " + nickname + " )";
-        try (Statement stmt = conn.createStatement()){
-            ResultSet rs = stmt.executeQuery(query);
+        String query = "INSERT INTO players (id, name, nickname) VALUES (?, ?, ?);";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)){
+            pstmt.setObject(1, player.getId());
+            pstmt.setString(2, name);
+            pstmt.setString(3, nickname);
+            pstmt.executeUpdate();
         } catch (SQLException e){
             throw new BgtException(e);
         }
@@ -66,16 +74,23 @@ public class BgtDataManager_JDBC implements BgtDataManager {
     public Collection<Player> findPlayersByName(String name) throws BgtException{
         Collection<Player> players1 = new ArrayList<>();
         Connection conn = this.getConnection();
-        String query = "SELECT name FROM players WHERE name='"+ name + "';";
-        try (Statement stmt = conn.createStatement()){
-            ResultSet rs = stmt.executeQuery(query);
+        String query = "SELECT * FROM players WHERE name=?;";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)){
+            pstmt.setString(1, name); // Set the parameter value for the placeholder
+            ResultSet rs = pstmt.executeQuery();
             while(rs.next()){
-                String id1 = rs.getString("id");;
-                for (int i = 0; i < players.size(); i++){
-                    if (Objects.equals(String.valueOf(players.get(i).getId()), id1)) {
-                        players1.add(players.get(i));
-                    }
-                }
+//                UUID id = rs.getObject("id");
+                String playerName = rs.getString("name");
+                String playerNickname = rs.getString("nickname");
+                // Create a new Player instance using the retrieved values
+                Player player = new Player_JDBC(playerName, playerNickname);
+                players1.add(player);
+//                String id1 = rs.getString("id");;
+//                for (int i = 0; i < players.size(); i++){
+//                    if (Objects.equals(String.valueOf(players.get(i).getId()), id1)) {
+//                        players1.add(players.get(i));
+//                    }
+//                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -98,9 +113,13 @@ public class BgtDataManager_JDBC implements BgtDataManager {
     public BoardGame_JDBC createNewBoardgame(String name, String bggURL) throws BgtException{
         Connection conn = this.getConnection();
         BoardGame_JDBC boardGame = new BoardGame_JDBC(name, bggURL);
-        String query = "INSERT INTO boardgames (id, name, bggURL) VALUES (" + ((BoardGame_JDBC) boardGame).getId() + name + "," + bggURL + " )";
-        try (Statement stmt = conn.createStatement()){
-            ResultSet rs = stmt.executeQuery(query);
+        String query = "INSERT INTO boardgames (id, name, bggURL) VALUES (?, ?, ?);";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)){
+//            ResultSet rs = pstmt.executeQuery(query);
+            pstmt.setObject(1, boardGame.getId());
+            pstmt.setString(2, name);
+            pstmt.setString(3, bggURL);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -118,9 +137,10 @@ public class BgtDataManager_JDBC implements BgtDataManager {
     public Collection<BoardGame> findGamesByName(String name) throws BgtException{
         Connection conn = this.getConnection();
         Collection<BoardGame> boardGames = new ArrayList<>();
-        String query = "SELECT name FROM boardgames WHERE name='"+ name + "';";
-        try (Statement stmt = conn.createStatement()){
-            ResultSet rs = stmt.executeQuery(query);
+        String query = "SELECT * FROM boardgames WHERE name=?;";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)){
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
             while(rs.next()){
                 String id1 = rs.getString("id");;
                 for (int i = 0; i < games.size(); i++){
@@ -176,19 +196,52 @@ public class BgtDataManager_JDBC implements BgtDataManager {
 
     public void persistPlayer(Player player) throws SQLException, BgtException {
         Player_JDBC playerJdbc = (Player_JDBC) player;
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getId().equals(playerJdbc.getId())) {
-                Connection conn = this.getConnection();
-                String query = "UPDATE players SET name='" + playerJdbc.getPlayerName() + "', nickname='" + playerJdbc.getPlayerNickName() + "';";
-                try (Statement stmt = conn.createStatement()) {
-                    ResultSet rs = stmt.executeQuery(query);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false); // Start transaction
+
+            // Check if the player already exists
+            boolean playerExists = false;
+            for (Player existingPlayer : players) {
+                if (existingPlayer.getId().equals(playerJdbc.getId())) {
+                    playerExists = true;
+                    break;
                 }
             }
-        }
-        if (!players.contains(playerJdbc)) {
-            createNewPlayer(playerJdbc.getPlayerName(), playerJdbc.getPlayerNickName());
+
+            if (playerExists) {
+                // Update the existing player
+                String updateQuery = "UPDATE players SET name=?, nickname=? WHERE id=?";
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                    updateStmt.setString(1, playerJdbc.getPlayerName());
+                    updateStmt.setString(2, playerJdbc.getPlayerNickName());
+                    updateStmt.setObject(3, playerJdbc.getId());
+                    updateStmt.executeUpdate();
+                }
+            } else {
+                // Insert a new player
+                String insertQuery = "INSERT INTO players (id, name, nickname) VALUES (?, ?, ?)";
+                try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                    insertStmt.setObject(1, playerJdbc.getId());
+                    insertStmt.setString(2, playerJdbc.getPlayerName());
+                    insertStmt.setString(3, playerJdbc.getPlayerNickName());
+                    insertStmt.executeUpdate();
+                }
+                players.add(playerJdbc);
+            }
+
+            conn.commit(); // Commit transaction
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback(); // Rollback transaction if an error occurs
+            }
+            throw new BgtException(e);
+        } finally {
+            if (conn != null) {
+                conn.setAutoCommit(true); // Reset auto-commit mode
+                conn.close(); // Close connection
+            }
         }
 
     }
@@ -205,21 +258,54 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * @param game the game
      */
 
-    public void persistBoardGame(BoardGame game) throws BgtException {
+    public void persistBoardGame(BoardGame game) throws SQLException, BgtException {
         BoardGame_JDBC boardGameJdbc = (BoardGame_JDBC) game;
-        for (int i = 0; i < games.size(); i++) {
-            if (games.get(i).getId().equals(boardGameJdbc.getId())) {
-                Connection conn = this.getConnection();
-                String query = "UPDATE games SET name='" + boardGameJdbc.getName() + "', bggUrl='" + boardGameJdbc.getBGG_URL() + "';";
-                try (Statement stmt = conn.createStatement()) {
-                    ResultSet rs = stmt.executeQuery(query);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false); // Start transaction
+
+            // Check if the board game already exists
+            boolean boardGameExists = false;
+            for (BoardGame existingGame : games) {
+                if (existingGame.getId().equals(boardGameJdbc.getId())) {
+                    boardGameExists = true;
+                    break;
                 }
             }
-        }
-        if (!games.contains(boardGameJdbc)) {
-            createNewBoardgame(boardGameJdbc.getName(), boardGameJdbc.getBGG_URL());
+
+            if (boardGameExists) {
+                // Update the existing board game
+                String updateQuery = "UPDATE boardgames SET name=?, bggURL=? WHERE id=?";
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                    updateStmt.setString(1, boardGameJdbc.getName());
+                    updateStmt.setString(2, boardGameJdbc.getBGG_URL());
+                    updateStmt.setObject(3, boardGameJdbc.getId());
+                    updateStmt.executeUpdate();
+                }
+            } else {
+                // Insert a new board game
+                String insertQuery = "INSERT INTO boardgames (id, name, bggURL) VALUES (?, ?, ?)";
+                try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                    insertStmt.setObject(1, boardGameJdbc.getId());
+                    insertStmt.setString(2, boardGameJdbc.getName());
+                    insertStmt.setString(3, boardGameJdbc.getBGG_URL());
+                    insertStmt.executeUpdate();
+                }
+                games.add(boardGameJdbc);
+            }
+
+            conn.commit(); // Commit transaction
+        } catch (SQLException e) {
+            if (conn != null) {
+                conn.rollback(); // Rollback transaction if an error occurs
+            }
+            throw new BgtException(e);
+        } finally {
+            if (conn != null) {
+                conn.setAutoCommit(true); // Reset auto-commit mode
+                conn.close(); // Close connection
+            }
         }
     }
 }

@@ -37,7 +37,8 @@ public class BoardGame_JDBC implements BoardGame {
      * @return the string representation of the object
      */
     public String toVerboseString(){
-        return "";
+
+        return "Id: " + this.id + ", Name: " + this.name + ", bggURL: " + this.bggURL + "\n";
     }
 
 
