@@ -54,7 +54,8 @@ public class Player_JDBC implements Player {
      * @return the string representation of the object
      */
     public String toVerboseString(){
-        return "";
+
+        return "Id: " + this.id +  ", Name: " + name + ", Nickname: " + nickName + "\n";
     }
 
 
