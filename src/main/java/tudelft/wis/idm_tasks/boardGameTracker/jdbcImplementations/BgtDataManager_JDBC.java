@@ -95,7 +95,7 @@ public class BgtDataManager_JDBC implements BgtDataManager {
      * @return the new game
      * @throws SQLException DB trouble
      */
-    public BoardGame createNewBoardgame(String name, String bggURL) throws BgtException{
+    public BoardGame_JDBC createNewBoardgame(String name, String bggURL) throws BgtException{
         Connection conn = this.getConnection();
         BoardGame_JDBC boardGame = new BoardGame_JDBC(name, bggURL);
         String query = "INSERT INTO boardgames (id, name, bggURL) VALUES (" + ((BoardGame_JDBC) boardGame).getId() + name + "," + bggURL + " )";
