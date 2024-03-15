@@ -19,10 +19,14 @@ public class PlaySession_JPA implements PlaySession {
     @GeneratedValue
     private UUID id;
     private Date date;
+    @OneToOne
     private Player host;
+    @OneToOne
     private BoardGame game;
     private int playTime;
+    @OneToMany
     private Collection<Player> players;
+    @OneToOne
     private Player winner;
 
     public PlaySession_JPA(Date date, Player host, BoardGame game, int playtime, Collection<Player> players, Player winner){
