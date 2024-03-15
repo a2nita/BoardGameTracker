@@ -21,12 +21,12 @@ import java.util.Date;
 
 public class BgtDataManager_JPA implements BgtDataManager {
 
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
     public BgtDataManager_JPA() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("tudelft.wis.idm_tasks.boardGameTracker");
-        entityManager = entityManagerFactory.createEntityManager();
+        try (EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPATest")) {
+            entityManager = entityManagerFactory.createEntityManager();
+        }
     }
     /**
      * Creates a new player and stores it in the DB.
@@ -97,7 +97,7 @@ public class BgtDataManager_JPA implements BgtDataManager {
      * @return collection of all boardgames containing the param substring in their names
      */
     public Collection<BoardGame> findGamesByName(String name) throws BgtException{
-        String jpql = "SELECT b FROM Boardgame b WHERE b.name LIKE :search ";
+        String jpql = "SELECT b FROM BoardGame_JPA b WHERE b.name LIKE :search ";
         TypedQuery<BoardGame_JPA> query = entityManager.createQuery(jpql, BoardGame_JPA.class);
         query.setParameter("search", "%" + name + "%");
         Collection<BoardGame_JPA> games = query.getResultList();
@@ -192,5 +192,9 @@ public class BgtDataManager_JPA implements BgtDataManager {
             entityManager.persist(game);
         }
         transaction.commit();
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }
