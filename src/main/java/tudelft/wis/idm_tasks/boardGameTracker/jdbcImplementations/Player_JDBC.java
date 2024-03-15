@@ -62,13 +62,4 @@ public class Player_JDBC implements Player {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-    // @TODO: Implement this method.
-
 }

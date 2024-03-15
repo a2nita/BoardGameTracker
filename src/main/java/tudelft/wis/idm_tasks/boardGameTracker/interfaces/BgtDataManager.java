@@ -107,7 +107,7 @@ public interface BgtDataManager {
      * Persists a given game to the DB. Note that this game might already exist and only needs an update :-)
      * @param game the game
      */
-    public void persistBoardGame(BoardGame game);
+    public void persistBoardGame(BoardGame game) throws BgtException;
         // @TODO: Implement this method.
 
 }
