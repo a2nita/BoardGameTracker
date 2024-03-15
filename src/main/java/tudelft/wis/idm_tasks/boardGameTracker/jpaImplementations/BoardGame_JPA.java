@@ -5,7 +5,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 
 import java.util.UUID;
 
-@Entity(name = "BoardGame")
+@Entity
 @Table(name ="boardgames", indexes = { @Index(columnList="id"),
         @Index(columnList = "name"), @Index(columnList = "bggURL")})
 public class BoardGame_JPA implements BoardGame {
