@@ -5,6 +5,7 @@ import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BgtDataManager;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.BoardGame;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.PlaySession;
 import tudelft.wis.idm_tasks.boardGameTracker.interfaces.Player;
+import tudelft.wis.idm_tasks.boardGameTracker.jpaImplementations.BgtDataManager_JPA;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -57,7 +58,7 @@ public abstract class AbstractBGTDemoJPA {
      *
      * @return BgtDataManager instance
      */
-    public abstract BgtDataManager getBgtDataManager();
+    public abstract BgtDataManager_JPA getBgtDataManager();
 
     /**
      * Creates several players and games, and adds them to the DB.
@@ -71,7 +72,7 @@ public abstract class AbstractBGTDemoJPA {
         Collection<PlaySession> sessions = new LinkedList<PlaySession>();
         Collection<Player> players = new LinkedList<Player>();
         Collection<BoardGame> games = new LinkedList<BoardGame>();
-        BgtDataManager dbManager = getBgtDataManager();
+        BgtDataManager_JPA dbManager = getBgtDataManager();
 
         // Create 5 games
         {

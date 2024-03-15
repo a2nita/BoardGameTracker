@@ -21,12 +21,12 @@ import java.util.Date;
 
 public class BgtDataManager_JPA implements BgtDataManager {
 
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
     public BgtDataManager_JPA() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("tudelft.wis.idm_tasks.boardGameTracker");
-        entityManager = entityManagerFactory.createEntityManager();
+        try (EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPATest")) {
+            entityManager = entityManagerFactory.createEntityManager();
+        }
     }
     /**
      * Creates a new player and stores it in the DB.
@@ -192,5 +192,9 @@ public class BgtDataManager_JPA implements BgtDataManager {
             entityManager.persist(game);
         }
         transaction.commit();
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

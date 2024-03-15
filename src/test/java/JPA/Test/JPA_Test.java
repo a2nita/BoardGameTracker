@@ -4,6 +4,7 @@
  */
 package JPA.Test;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
 import tudelft.wis.idm_solutions.BoardGameTracker.POJO_Implementation.BgtDataManager_POJO;
@@ -33,9 +34,10 @@ public class JPA_Test extends tudelft.wis.idm_tasks.boardGameTracker.AbstractBGT
     }
 
     private BgtDataManager_JPA dataManager = new BgtDataManager_JPA();
+    private EntityManager entityManager = dataManager.getEntityManager();
 
     @Override
-    public BgtDataManager getBgtDataManager() {
+    public BgtDataManager_JPA getBgtDataManager() {
         return dataManager;
     }
 
