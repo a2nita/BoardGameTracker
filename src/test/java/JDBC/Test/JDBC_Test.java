@@ -89,25 +89,7 @@ public class JDBC_Test extends tudelft.wis.idm_tasks.boardGameTracker.AbstractBG
         } else {
             Logger.error("No games found with name: " + gameJdbc.getName());
         }
-//        BoardGame retrievedGame = this.getBgtDataManager().findGamesByName(gameJdbc.getName()).iterator().next();
 
-        // Remove a game from the host's collection, add  it again
-//        BoardGame firstGame = playerJdbc.getGameCollection().iterator().next();
-//        int numOfGames = playerJdbc.getGameCollection().size();
-//        playerJdbc.getGameCollection().remove(firstGame);
-//        this.getBgtDataManager().persistPlayer(playerJdbc);
-
-        // Load the host again from DB
-//        Player hostFromDB = this.getBgtDataManager().findPlayersByName(playerJdbc.getPlayerName()).iterator().next();
-//        assertEquals(numOfGames - 1, hostFromDB.getGameCollection().size());
-
-        // Add the game again
-//        hostFromDB.getGameCollection().add(firstGame);
-//        this.getBgtDataManager().persistPlayer(playerJdbc);
-
-        // Load the host again from DB
-//        Player hostFromDB2 = this.getBgtDataManager().findPlayersByName(playerJdbc.getPlayerName()).iterator().next();
-//        assertEquals(numOfGames, hostFromDB2.getGameCollection().size());
 
     }
 
